@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:task="http://www.springframework.org/schema/task" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/tx 
+                        http://www.springframework.org/schema/tx/spring-tx.xsd
+                        http://www.springframework.org/schema/task 
+                        http://www.springframework.org/schema/task/spring-task.xsd
+                        http://www.springframework.org/schema/jdbc
+                        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd"
+    default-autowire="byName">
+
+    <context:annotation-config />
+
+    <context:component-scan base-package="org.performance.web.service, org.performance.web.dao" />
+
+    <context:property-placeholder location="classpath:hibernate.properties" />
+
+    <!-- <jdbc:embedded-database id="dataSource" type="H2" /> -->
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driverClassName}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+    </bean>
+
+
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="packagesToScan">
+            <list>
+                <value>org.performance.web.dao.model</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.generate_statistics">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager" />
+
+    <tx:annotation-driven transaction-manager="txManager" />
+
+    <!-- Message sources -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="cacheSeconds" value="900"></property>
+        <property name="basenames">
+            <list>
+                <value>classpath:commonMessages</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <task:annotation-driven executor="executor" scheduler="scheduler" />
+
+    <task:scheduler id="scheduler" pool-size="5" />
+
+    <task:executor id="executor" pool-size="5-25" queue-capacity="200" />
+
+</beans>

@@ -1,0 +1,13 @@
+div#topErrorMessage {
+	background-color: rgb(240, 182, 182);
+	padding: 10px;
+	font-size: 16px;
+}
+
+div.container table.table-striped td.statusSuccess {
+	background-color: rgb(127, 228, 127);
+}
+
+div.container table.table-striped td.statusFail {
+	background-color: rgb(236, 205, 205);
+}

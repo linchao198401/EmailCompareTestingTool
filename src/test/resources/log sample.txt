@@ -1,0 +1,1 @@
+[yyyy-MM-dd HH:mm:ss.SSS] || [App]=[abc] || [class.method]=[classA.method] || [duration]=[1234567890] || [status]=[ok,error]
